@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
 
 from z3 import *
 import binascii
@@ -7,10 +7,10 @@ s = '5616f5962674d26741d2810600a6c5647620c4e3d2870177f09716b2379012c342d3b584c56
 
 encrypted = []
 for i in range(0, len(s), 2):
-    encrypted.append(binascii.unhexlify(s[i+1] + s[i])[0])
+    encrypted.append(ord(binascii.unhexlify(s[i+1] + s[i])[0]))
 
-print('message len:', len(encrypted)-1)
-print(encrypted)
+print 'message len:', len(encrypted)-1
+print encrypted
 # 声明变量，encrypted 是已知，因此 IntVal 即可
 encrypted = [IntVal(i) for i in encrypted]
 message = [Int('flag%d' % i) for i in range(len(encrypted)-1)]
@@ -24,6 +24,7 @@ for i in range(ml):
     if i == ml - 33:
         solver.add(message[i] == ord('|'))
     else:
+	#pass
         # 肯定是可见字符，因此限定范围如下
         solver.add(message[i] < 127)
         solver.add(message[i] >= 32)
@@ -36,6 +37,9 @@ if solver.check() == sat:
     s = []
     for i in range(ml):
         s.append(m[message[i]].as_long())
-    print(bytes(s))
+    strs=""
+    for i in s:
+        strs+=chr(i)
+    print strs
 else:
-    print('unsat') 
+    print 'unsat'

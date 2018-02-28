@@ -1,9 +1,8 @@
-#!/usr/bin/env python3
-
 from z3 import *
 
-def int2bytes(a: int) -> bytes:
-    return a.to_bytes(16, byteorder='little')
+def int2bytes(a):# int -> bytes:
+    #return a.to_bytes(16, byteorder='little')
+    return ('%%0%dx' % (16 << 1) % a).decode('hex')[-16:][::-1]
 
 def combine128(a, b):
     return (a << 64) | b
@@ -26,7 +25,7 @@ xmm5_results = [
 # Z3 Solve here
 
 def int2bitvecval(x):
-    return [BitVecVal(i, 16) for i in int2bytes(x)]
+    return [BitVecVal(ord(i), 16) for i in int2bytes(x)]
 
 def andps_z3(a, b):
     assert len(a) == len(b) == 16
@@ -74,6 +73,9 @@ if solver.check() == sat:
         s.append(m[flag[i]].as_long())
     # shuffle back
     s = s[12:16] + s[8:12] + s[0:8]
-    print(b'flag' + bytes(s))
+    strs=""
+    for i in s:
+        strs+=chr(i)
+    print "flag"+strs
 else:
-    print('unsat')
+    print 'unsat'
