@@ -1,4 +1,6 @@
-#####gcc -o out exp.c -std=c99
+#####gcc -o out exp.c -std=c99 指定规则为c99
+
+gcc -o out -lrt /lib64/librt-2.12.so q.c 指定加载libc
 
 #####版本硬编码，可将当前系统加入尝试
 
